@@ -24,7 +24,7 @@ class GithubFeed
   end
 
   def events
-    events = json_get("/orgs/#{@org}/events?access_token=#{@token}")
+    events = json_get("/users/#{@user}/received_events?access_token=#{@token}")
     events.map do |event_json|
       event_type = event_json[:type]
       Object.const_get(event_type).new(event_json) if EVENT_TYPES.include?(event_type)
@@ -101,9 +101,9 @@ class PushEvent < GithubEvent
 
 end
 
-user         = "your user name in the organization"
-org          = "name of your organization"
-token        = "token"
+token  = ENV['CANVAS_GITHUB_TOKEN']
+user   = ENV['CANVAS_GITHUB_USER']
+org    = ENV['CANVAS_GITHUB_ORG']
 hist_size    = 5
 
 SCHEDULER.every '30s', :first_in => 0 do
